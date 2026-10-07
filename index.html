@@ -387,6 +387,34 @@ footer .links{font-size:13px}
 .loop span:nth-of-type(2){animation-delay:1.5s}.loop span:nth-of-type(3){animation-delay:3s}.loop span:nth-of-type(4){animation-delay:4.5s}.loop span:nth-of-type(5){animation-delay:6s}
 @keyframes lit{0%,18%{color:#08152C;background:#63D3FF;border-color:#63D3FF;box-shadow:0 0 24px rgba(99,211,255,.5)}22%,100%{color:var(--micro-dark);background:rgba(8,21,44,.5);border-color:var(--hair);box-shadow:none}}
 @media (prefers-reduced-motion:reduce){.grid-bg,.glow-orb,.vsl-glow,.deal-card,.loop span,.play::before,.play::after,.live-pill i{animation:none!important}}
+/* ---- quiz funnel ---- */
+.qz-top{margin-bottom:26px}
+.qz-meta{display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:600;color:var(--micro-light);margin-bottom:10px;min-height:28px}
+.qz-back{display:inline-flex;align-items:center;gap:4px;background:none;border:0;padding:4px 6px 4px 0;font:600 13px Inter;color:var(--cta);cursor:pointer;visibility:hidden}
+.qz-back svg{width:16px;height:16px}
+.qz-back.show{visibility:visible}
+.qz-bar{height:8px;border-radius:8px;background:var(--paper);overflow:hidden;border:1px solid rgba(13,31,61,.06)}
+.qz-bar i{display:block;height:100%;width:14%;border-radius:8px;background:linear-gradient(90deg,var(--cta),var(--hi));transition:width .35s ease}
+.qz{display:none}
+.qz.on{display:block;animation:qzin .35s ease both}
+.qz.on.back{animation-name:qzback}
+@keyframes qzin{from{transform:translateX(28px)}to{transform:none}}
+@keyframes qzback{from{transform:translateX(-28px)}to{transform:none}}
+.qz-k{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:0 0 8px}
+.qz h3{font-size:clamp(21px,2.4vw,26px);line-height:1.25;margin:0 0 22px}
+.qz .opts{gap:10px}
+.qz .opt span{min-height:56px;font-size:16px;font-weight:500;cursor:pointer}
+.qz .opt:hover span{border-color:rgba(21,94,239,.5)}
+.qz .scale .opt span{min-height:50px;font-weight:600}
+.qz textarea{min-height:120px}
+.qz-next{width:100%;margin-top:4px}
+.qz-stop{text-align:left}
+.qz-stop p:not(.qz-k){font-size:16.5px;margin-bottom:22px}
+.qz-stop .btn{width:100%}
+.qz-link{display:block;margin:16px auto 0;background:none;border:0;font:600 14px Inter;color:var(--cta);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.qz .field .err{display:none;font-size:13px;color:#B42318;margin-top:6px}
+.qz input.bad{border-color:#B42318}
+@media (prefers-reduced-motion:reduce){.qz.on{animation:none}}
 </style>
 </head>
 <body>
@@ -491,7 +519,7 @@ footer .links{font-size:13px}
         <h2>A straight answer about your situation.</h2>
       </div>
       <ol class="steps-list">
-        <li><h3>Apply below</h3><p>A short application about where you are, your biggest obstacle, your capital and your timeline.</p></li>
+        <li><h3>Answer 7 quick questions</h3><p>One at a time: your biggest obstacle, your capital, your timeline and where you are in your journey. About a minute.</p></li>
         <li><h3>Pick a time</h3><p>Choose a slot on the calendar. Please only schedule if you're committed to showing up.</p></li>
         <li><h3>Get a clear yes or no</h3><p>We look at your situation, your market and your capital, and tell you whether the program makes sense for you.</p></li>
         <li><h3>Walk away with next steps either way</h3><p>If it isn't a fit, you still leave knowing what to do next.</p></li>
@@ -639,66 +667,97 @@ footer .links{font-size:13px}
     <div class="apply-side">
       <span class="eyebrow">BRRR Strategy Call</span>
       <h2>Apply for your <span class="hi">strategy call.</span></h2>
-      <p>Answer honestly. These questions decide whether a call is the right next step for you right now, or whether the free class is.</p>
+      <p>Seven quick questions, one at a time. Answer honestly. They decide whether a call is the right next step for you right now, or whether the free class is.</p>
       <div class="note"><b>Due to high demand, we can only accept a few new calls per week.</b> Please only schedule if you're committed to showing up.</div>
     </div>
 
     <div class="form-card">
-      <div class="progress" aria-hidden="true"><span class="dot on" id="p1"><i>1</i>Apply</span><span class="line"></span><span class="dot" id="p2"><i>2</i>Pick a time</span></div>
+      <div class="qz-top">
+        <div class="qz-meta"><button type="button" class="qz-back" id="qzBack" aria-label="Previous question"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>Back</button><span id="qzCount" aria-live="polite">Question 1 of 7</span></div>
+        <div class="qz-bar" aria-hidden="true"><i id="qzFill"></i></div>
+      </div>
 
-      <form id="appForm" autocomplete="on">
-        <div class="row2">
-          <div class="field"><label for="fn">First Name</label><input id="fn" name="first_name" type="text" autocomplete="given-name"></div>
-          <div class="field"><label for="ln">Last Name</label><input id="ln" name="last_name" type="text" autocomplete="family-name"></div>
-        </div>
-        <div class="row2">
-          <div class="field"><label for="em">Email <span class="req">*</span></label><input id="em" name="email" type="email" required autocomplete="email"></div>
-          <div class="field"><label for="ph">Phone <span class="req">*</span></label><input id="ph" name="phone" type="tel" required autocomplete="tel"></div>
-        </div>
-        <div class="field"><label for="jr">Where are you currently in your real estate journey? <span class="req">*</span></label><textarea id="jr" name="journey" required></textarea></div>
-
-        <fieldset><legend>What is your biggest obstacle right now?</legend>
-          <div class="opts two">
+      <form id="appForm" autocomplete="on" novalidate>
+        <div class="qz" data-step="1">
+          <p class="qz-k">Your biggest obstacle</p>
+          <h3>What is your biggest obstacle right now?</h3>
+          <div class="opts">
             <label class="opt"><input type="radio" name="obstacle" value="deals"><span>Finding deals</span></label>
             <label class="opt"><input type="radio" name="obstacle" value="financing"><span>Financing</span></label>
             <label class="opt"><input type="radio" name="obstacle" value="analyze"><span>Understanding how to analyze deals</span></label>
             <label class="opt"><input type="radio" name="obstacle" value="contractors"><span>Finding contractors</span></label>
           </div>
-        </fieldset>
+        </div>
 
-        <fieldset><legend>How much capital or available credit do you currently have access to invest? <span class="req">*</span></legend>
+        <div class="qz" data-step="2">
+          <p class="qz-k">Your capital</p>
+          <h3>How much capital or available credit do you currently have access to invest?</h3>
           <div class="opts">
-            <label class="opt stop"><input type="radio" name="capital" value="under3k" required><span>Under $3,000 (please don't book a call)</span></label>
+            <label class="opt stop"><input type="radio" name="capital" value="under3k"><span>Under $3,000</span></label>
             <label class="opt"><input type="radio" name="capital" value="3-5k"><span>$3,000 - $5,000</span></label>
             <label class="opt"><input type="radio" name="capital" value="5-10k"><span>$5,000 - $10,000</span></label>
             <label class="opt"><input type="radio" name="capital" value="10-15k"><span>$10,000 - $15,000</span></label>
             <label class="opt"><input type="radio" name="capital" value="15k+"><span>$15,000+</span></label>
           </div>
-          <div class="under-msg" id="underMsg">Thanks for being honest. Calls are for people ready to invest right now. The best next step for you is Cindy's free live class, Thursdays at 7 PM ET.</div>
-        </fieldset>
+        </div>
 
-        <fieldset><legend>How soon would you be ready to purchase your first or next rental property?</legend>
+        <div class="qz" data-step="3">
+          <p class="qz-k">Your timeline</p>
+          <h3>How soon would you be ready to purchase your first or next rental property?</h3>
           <div class="opts">
             <label class="opt"><input type="radio" name="timing" value="60d"><span>Within 60 days</span></label>
             <label class="opt"><input type="radio" name="timing" value="3-6m"><span>Within 3-6 months</span></label>
             <label class="opt"><input type="radio" name="timing" value="research"><span>Just researching</span></label>
           </div>
-        </fieldset>
+        </div>
 
-        <fieldset><legend>On a scale of 1-10, how committed are you to buying your next rental property in the next 12 months?</legend>
+        <div class="qz" data-step="4">
+          <p class="qz-k">Your commitment</p>
+          <h3>On a scale of 1-10, how committed are you to buying your next rental property in the next 12 months?</h3>
           <div class="scale" id="scale"></div>
           <div class="scale-ends"><span>1 = not yet</span><span>10 = fully committed</span></div>
-        </fieldset>
+        </div>
 
-        <fieldset><legend>If you had the right strategy and support, would you be open to investing in your education to shortcut the learning curve? <span class="req">*</span></legend>
+        <div class="qz" data-step="5">
+          <p class="qz-k">Your education</p>
+          <h3>If you had the right strategy and support, would you be open to investing in your education to shortcut the learning curve?</h3>
           <div class="opts two">
-            <label class="opt"><input type="radio" name="education" value="yes" required><span>Yes</span></label>
+            <label class="opt"><input type="radio" name="education" value="yes"><span>Yes</span></label>
             <label class="opt"><input type="radio" name="education" value="no"><span>No</span></label>
           </div>
-        </fieldset>
+        </div>
 
-        <p class="consent">By submitting, you agree to be contacted by The BRRR Blueprint by phone, text and email about your call. Msg and data rates may apply. Reply STOP to opt out. See our Privacy Policy.</p>
-        <button class="btn btn-lg" type="submit" id="submitBtn">Book Your Strategy Call</button>
+        <div class="qz" data-step="6">
+          <p class="qz-k">Your journey</p>
+          <h3>Where are you currently in your real estate journey?</h3>
+          <div class="field"><label class="sr" for="jr">Where are you currently in your real estate journey?</label><textarea id="jr" name="journey" placeholder="A sentence or two is plenty"></textarea></div>
+          <button class="btn btn-lg qz-next" type="button" data-next>Next
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+        </div>
+
+        <div class="qz" data-step="7">
+          <p class="qz-k">Last step</p>
+          <h3>Where should we send your call details?</h3>
+          <div class="row2">
+            <div class="field"><label for="fn">First Name</label><input id="fn" name="first_name" type="text" autocomplete="given-name"></div>
+            <div class="field"><label for="ln">Last Name</label><input id="ln" name="last_name" type="text" autocomplete="family-name"></div>
+          </div>
+          <div class="row2">
+            <div class="field"><label for="em">Email <span class="req">*</span></label><input id="em" name="email" type="email" required autocomplete="email"></div>
+            <div class="field"><label for="ph">Phone <span class="req">*</span></label><input id="ph" name="phone" type="tel" required autocomplete="tel"></div>
+          </div>
+          <p class="consent">By submitting, you agree to be contacted by The BRRR Blueprint by phone, text and email about your call. Msg and data rates may apply. Reply STOP to opt out. See our Privacy Policy.</p>
+          <button class="btn btn-lg" type="submit" id="submitBtn">See Available Times</button>
+        </div>
+
+        <div class="qz qz-stop" data-step="stop">
+          <p class="qz-k">Thanks for being honest</p>
+          <h3>A call isn't the right next step yet.</h3>
+          <p>Calls are for people ready to invest right now. The best next step for you is Cindy's free live class, Thursdays at 7 PM ET.</p>
+          <a class="btn btn-lg" href="https://gostrategicmarketing-deployment.github.io/brrr-webinar-registration/">Save My Seat for Thursday's Class</a>
+          <button type="button" class="qz-link" id="qzChange">Change my answer</button>
+        </div>
+
         <div class="form-msg" id="formMsg" role="status"></div>
       </form>
 
@@ -751,32 +810,60 @@ footer .links{font-size:13px}
     sc.appendChild(l);
   }
 
-  // capital gate
-  var form=document.getElementById('appForm'),under=document.getElementById('underMsg'),btn=document.getElementById('submitBtn'),msg=document.getElementById('formMsg');
-  form.querySelectorAll('input[name=capital]').forEach(function(r){
-    r.addEventListener('change',function(){
-      var u=form.capital.value==='under3k';
-      under.classList.toggle('show',u);
-      btn.textContent=u?'Submit Application':'Book Your Strategy Call';
+  // quiz funnel: one question per screen, auto-advance on answer
+  var form=document.getElementById('appForm'),msg=document.getElementById('formMsg');
+  var steps=[].slice.call(form.querySelectorAll('.qz')),TOTAL=7,cur=1,hist=[];
+  var back=document.getElementById('qzBack'),count=document.getElementById('qzCount'),fill=document.getElementById('qzFill');
+  function stepEl(k){ return form.querySelector('.qz[data-step="'+k+'"]'); }
+  function show(k,dir){
+    steps.forEach(function(el){ el.classList.remove('on','back'); });
+    var el=stepEl(k); el.classList.add('on'); if(dir<0) el.classList.add('back');
+    cur=k; msg.classList.remove('show');
+    var n=(k==='stop')?2:k;
+    count.textContent=(k==='stop')?'Your best next step':'Question '+n+' of '+TOTAL;
+    fill.style.width=(k==='stop'?100:Math.round(n/TOTAL*100))+'%';
+    back.classList.toggle('show',hist.length>0);
+  }
+  function go(k){ hist.push(cur); show(k,1); focusStep(); }
+  function focusStep(){
+    var el=stepEl(cur),f=el.querySelector('textarea,input[type=text],input[type=email]');
+    if(f && cur!==7 && window.matchMedia('(min-width:761px)').matches){ f.focus({preventScroll:true}); }
+  }
+  back.addEventListener('click',function(){ if(!hist.length) return; show(hist.pop(),-1); });
+  document.getElementById('qzChange').addEventListener('click',function(){ hist.pop(); show(2,-1); });
+
+  var timer;
+  form.querySelectorAll('.qz input[type=radio]').forEach(function(r){
+    r.addEventListener('click',function(){
+      var k=+r.closest('.qz').dataset.step;
+      clearTimeout(timer);
+      timer=setTimeout(function(){
+        if(r.name==='capital' && r.value==='under3k'){ go('stop'); return; }
+        if(k<TOTAL) go(k+1);
+      },320);
     });
   });
+  form.querySelector('[data-next]').addEventListener('click',function(){ go(7); });
 
   // mock submit: no action, no network
   form.addEventListener('submit',function(e){
     e.preventDefault();
-    if(form.capital.value==='under3k'){
-      msg.textContent='This is a concept preview. In the live version, this answer sends you to the free Thursday class instead of the calendar.';
-      msg.classList.add('show');
-      return;
-    }
+    var ok=true;
+    ['em','ph'].forEach(function(id){
+      var f=document.getElementById(id),v=f.value.trim();
+      var good=id==='em'?/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v):v.replace(/\D/g,'').length>=10;
+      f.classList.toggle('bad',!good); if(!good) ok=false;
+    });
+    if(!ok){ msg.textContent='Please add a valid email and phone number so we can confirm your call.'; msg.classList.add('show'); return; }
     form.style.display='none';
+    document.querySelector('.qz-top').style.display='none';
     var days=document.getElementById('calDays'),html='';
     for(var d=0;d<35;d++){ html+='<i'+((d%7>0&&d%7<6&&d>4&&d<26&&d%3!==0)?' class="av"':'')+'></i>'; }
     days.innerHTML=html;
     document.getElementById('cal').classList.add('show');
-    document.getElementById('p2').classList.add('on');
     document.getElementById('apply').scrollIntoView({behavior:'smooth',block:'start'});
   });
+  show(1,1);
 
   // sticky mobile CTA
   var sticky=document.getElementById('sticky'),heroCta=document.getElementById('heroCta'),apply=document.getElementById('apply');
